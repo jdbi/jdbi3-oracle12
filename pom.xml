@@ -18,10 +18,11 @@
     <parent>
         <artifactId>jdbi3-parent</artifactId>
         <groupId>org.jdbi</groupId>
-        <version>3.5.2-SNAPSHOT</version>
+        <version>3.5.1</version>
     </parent>
 
     <artifactId>jdbi3-oracle12</artifactId>
+    <version>3.6.0-SNAPSHOT</version>
     <name>jdbi3 Oracle 12</name>
     <description>Jdbi Oracle-specific features</description>
     <url>http://jdbi.org/</url>
@@ -58,6 +59,19 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </releases>
+            <id>maven.oracle.com</id>
+            <name>oracle-maven-repo</name>
+            <url>https://maven.oracle.com</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
 
     <build>
         <pluginManagement>
