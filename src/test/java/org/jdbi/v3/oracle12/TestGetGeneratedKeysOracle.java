@@ -13,8 +13,6 @@
  */
 package org.jdbi.v3.oracle12;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -25,19 +23,33 @@ import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
+import org.jdbi.v3.testing.JdbiRule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
+import org.testcontainers.containers.OracleContainer;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * This test assumes an instance of Oracle database called 'test' is
- * running on localhost port 1521.
+ * This test uses an oracle instance in a testcontainer.
  *
  * @author Ricco Førgaard mailto:ricco@vimond.com
  * @since 2014-10-18
  */
 public class TestGetGeneratedKeysOracle {
+
+    @ClassRule
+    public static OracleContainer oc = new OracleContainer("gvenzl/oracle-xe");
     @Rule
-    public OracleDatabaseRule dbRule = new OracleDatabaseRule().withPlugin(new SqlObjectPlugin());
+    public JdbiRule dbRule = new OracleDatabaseRule(oc)
+        .withPlugin(new SqlObjectPlugin());
+
+    @BeforeClass
+    public static void before() throws Exception {
+        OracleDatabaseRule.createTables(oc);
+    }
 
     /**
      * Oracle needs to be queried by index and not id (like
