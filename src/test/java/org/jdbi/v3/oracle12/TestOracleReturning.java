@@ -13,51 +13,66 @@
  */
 package org.jdbi.v3.oracle12;
 
+import java.util.List;
+
+import oracle.jdbc.OracleTypes;
+import org.jdbi.v3.core.Handle;
+import org.jdbi.v3.core.Something;
+import org.jdbi.v3.sqlobject.SqlObjectPlugin;
+import org.jdbi.v3.testing.JdbiRule;
+import org.junit.BeforeClass;
+import org.junit.ClassRule;
+import org.junit.Rule;
+import org.junit.Test;
+import org.testcontainers.containers.OracleContainer;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.jdbi.v3.oracle12.OracleReturning.returnParameters;
 import static org.jdbi.v3.oracle12.OracleReturning.returningDml;
 
-import java.util.List;
-
-import org.jdbi.v3.core.Handle;
-import org.jdbi.v3.core.Something;
-import org.jdbi.v3.sqlobject.SqlObjectPlugin;
-import org.junit.Rule;
-import org.junit.Test;
-
-import oracle.jdbc.OracleTypes;
-
+/**
+ * This test uses an oracle instance in a testcontainer.
+ */
 public class TestOracleReturning {
 
+    @ClassRule
+    public static OracleContainer oc = new OracleContainer("gvenzl/oracle-xe");
     @Rule
-    public OracleDatabaseRule dbRule = new OracleDatabaseRule().withPlugin(new SqlObjectPlugin());
+    public JdbiRule dbRule = new OracleDatabaseRule(oc)
+        .withPlugin(new SqlObjectPlugin());
+
+    @BeforeClass
+    public static void before() throws Exception {
+        OracleDatabaseRule.createTables(oc);
+    }
 
     @Test
     public void testReturningDmlPositionalParams() {
-        Handle h = dbRule.getSharedHandle();
+        Handle h = dbRule.getHandle();
 
-        List<Integer> ids = h.createUpdate("insert into something(id, name) values (?, ?) returning id into ?")
-                .bind(0, 17)
-                .bind(1, "Brian")
-                .addCustomizer(returnParameters().register(2, OracleTypes.INTEGER))
-                .execute(returningDml())
-                .mapTo(int.class)
-                .list();
+        List<Integer> ids = h.createUpdate(
+                "insert into something(id, name) values (?, ?) returning id into ?")
+            .bind(0, 17)
+            .bind(1, "Brian")
+            .addCustomizer(returnParameters().register(2, OracleTypes.INTEGER))
+            .execute(returningDml())
+            .mapTo(int.class)
+            .list();
 
         assertThat(ids).containsExactly(17);
     }
 
     @Test
     public void testReturningDmlNamedParams() {
-        Handle h = dbRule.getSharedHandle();
+        Handle h = dbRule.getHandle();
 
         List<Integer> ids = h.createUpdate("insert into something(id, name) values (:id, :name) returning id into :result")
-                .bindBean(new Something(17, "Brian"))
+                .bindBean(new Something(20, "Brian"))
                 .addCustomizer(returnParameters().register("result", OracleTypes.INTEGER))
                 .execute(returningDml())
                 .mapTo(int.class)
                 .list();
 
-        assertThat(ids).containsExactly(17);
+        assertThat(ids).containsExactly(20);
     }
 }

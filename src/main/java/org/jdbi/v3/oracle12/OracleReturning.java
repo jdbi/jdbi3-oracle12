@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
+import oracle.jdbc.OraclePreparedStatement;
 import org.jdbi.v3.core.argument.Argument;
 import org.jdbi.v3.core.result.ResultBearing;
 import org.jdbi.v3.core.result.ResultProducer;
@@ -27,8 +28,6 @@ import org.jdbi.v3.core.result.ResultSetException;
 import org.jdbi.v3.core.statement.Binding;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.core.statement.StatementCustomizer;
-
-import oracle.jdbc.OraclePreparedStatement;
 
 /**
  * Returns a {@link ResultBearing} from Oracle's "DML Returning" features introduced in 10.2. To use,

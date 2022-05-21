@@ -13,97 +13,54 @@
  */
 package org.jdbi.v3.oracle12;
 
-import static org.junit.Assume.assumeNoException;
-
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.jdbi.v3.core.ConnectionFactory;
-import org.jdbi.v3.core.Handle;
+import javax.sql.DataSource;
+
+import oracle.jdbc.pool.OracleDataSource;
 import org.jdbi.v3.core.Jdbi;
-import org.jdbi.v3.core.rule.DatabaseRule;
-import org.jdbi.v3.core.spi.JdbiPlugin;
-import org.junit.rules.ExternalResource;
+import org.jdbi.v3.testing.JdbiRule;
+import org.testcontainers.containers.OracleContainer;
 
 /**
- * Helper for a single, superuser privileged Oracle database.
+ * Helper for a database managed by testcontainers.
  */
-public class OracleDatabaseRule extends ExternalResource implements DatabaseRule {
-    /*
-     * Used this guide to install Oracle locally on a VirtualBox VM:
-     * https://dimitrisli.wordpress.com/2012/08/08/how-to-install-oracle-database-on-mac-os-any-version/
-     */
+public class OracleDatabaseRule extends JdbiRule {
 
-    // schema installed by default in Oracle DB Developer VM
-    String uri = "jdbc:oracle:thin:@//127.0.0.1:1521/orcl";
-    private Connection con;
-    private Jdbi db;
-    private Handle sharedHandle;
-    private boolean installPlugins = false;
-    private final List<JdbiPlugin> plugins = new ArrayList<>();
+    private final String uri;
+    private final String username;
+    private final String password;
 
-    @Override
-    protected void before() throws Throwable {
-        db = Jdbi.create(uri, "hr", "oracle");
-        if (installPlugins) {
-            db.installPlugins();
-        }
-        plugins.forEach(db::installPlugin);
-
-        try {
-            sharedHandle = db.open();
-        } catch (Exception e) {
-            assumeNoException("Oracle database not available", e);
-        }
-
-        sharedHandle.execute("create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
-        sharedHandle.execute("create table something (name varchar(200), id int, constraint something_id primary key (id))");
-        con = sharedHandle.getConnection();
+    public OracleDatabaseRule(OracleContainer oracleContainer) {
+        this.uri = oracleContainer.getJdbcUrl();
+        this.username = oracleContainer.getUsername();
+        this.password = oracleContainer.getPassword();
     }
 
     @Override
-    protected void after() {
+    protected DataSource createDataSource() {
         try {
-            sharedHandle.execute("drop table something");
-            sharedHandle.execute("drop sequence something_id_sequence");
+            OracleDataSource dataSource = new OracleDataSource();
+            dataSource.setURL(uri);
+            dataSource.setUser(username);
+            dataSource.setPassword(password);
 
-            con.close();
+            return dataSource;
         } catch (SQLException e) {
-            throw new AssertionError(e);
+            throw new IllegalStateException(e);
         }
     }
 
-    public OracleDatabaseRule withPlugins() {
-        installPlugins = true;
-        return this;
-    }
+    public static void createTables(OracleContainer oracleContainer) throws SQLException {
+        try (Connection connection = oracleContainer.createConnection("")) {
+            Jdbi jdbi = Jdbi.create(connection);
 
-    public OracleDatabaseRule withPlugin(JdbiPlugin plugin) {
-        plugins.add(plugin);
-        return this;
-    }
-
-    public String getConnectionString() {
-        return uri;
-    }
-
-    @Override
-    public Jdbi getJdbi() {
-        return db;
-    }
-
-    public Handle getSharedHandle() {
-        return sharedHandle;
-    }
-
-    public Handle openHandle() {
-        return getJdbi().open();
-    }
-
-    public ConnectionFactory getConnectionFactory() {
-        return () -> DriverManager.getConnection(getConnectionString());
+            jdbi.withHandle(handle -> {
+                handle.execute("create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
+                handle.execute("create table something (name varchar(200), id int, constraint something_id primary key (id))");
+                return null;
+            });
+        }
     }
 }
