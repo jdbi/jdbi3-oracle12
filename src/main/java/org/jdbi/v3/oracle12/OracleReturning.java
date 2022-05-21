@@ -28,6 +28,7 @@ import org.jdbi.v3.core.result.ResultSetException;
 import org.jdbi.v3.core.statement.Binding;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.core.statement.StatementCustomizer;
+import org.jdbi.v3.meta.Beta;
 
 /**
  * Returns a {@link ResultBearing} from Oracle's "DML Returning" features introduced in 10.2. To use,
@@ -46,6 +47,7 @@ import org.jdbi.v3.core.statement.StatementCustomizer;
  * <p>
  * This class still is beta, and may be changed incompatibly or removed at any time.
  */
+@Beta
 public class OracleReturning {
     private OracleReturning() {}
 
