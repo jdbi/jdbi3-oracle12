@@ -23,14 +23,14 @@
 
     <groupId>org.jdbi</groupId>
     <artifactId>jdbi3-oracle12</artifactId>
-    <version>3.31.0-SNAPSHOT</version>
+    <version>3.31.0</version>
     <name>jdbi3 Oracle 12</name>
     <description>Jdbi Oracle-specific features</description>
 
     <scm>
         <connection>scm:git:git://github.com/jdbi/jdbi3-oracle12.git</connection>
         <developerConnection>scm:git:git@github.com:jdbi/jdbi3-oracle12.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>v3.31.0</tag>
         <url>https://github.com/jdbi/jdbi3-oracle12/</url>
     </scm>
 
@@ -39,40 +39,6 @@
         <dep.oracle.version>19.14.0.0</dep.oracle.version>
         <moduleName>org.jdbi.v3.oracle12</moduleName>
     </properties>
-
-    <!-- repos are required to access the snapshot deps from the main build -->
-    <repositories>
-        <repository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-            <id>snapshots-repo</id>
-            <name>Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-        </repository>
-    </repositories>
-    <pluginRepositories>
-        <pluginRepository>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
-                <checksumPolicy>fail</checksumPolicy>
-            </snapshots>
-            <id>snapshots-repo</id>
-            <name>Nexus Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-            <layout>default</layout>
-        </pluginRepository>
-    </pluginRepositories>
 
     <dependencyManagement>
         <dependencies>
@@ -137,4 +103,38 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
+    <!-- repos are required to access the snapshot deps from the main build -->
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>snapshots-repo</id>
+            <name>Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <layout>default</layout>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>snapshots-repo</id>
+            <name>Nexus Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <layout>default</layout>
+        </pluginRepository>
+    </pluginRepositories>
 </project>
