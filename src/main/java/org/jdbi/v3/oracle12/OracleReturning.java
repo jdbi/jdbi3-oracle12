@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import oracle.jdbc.OraclePreparedStatement;
 import org.jdbi.v3.core.argument.Argument;
+import org.jdbi.v3.core.result.NoResultsException;
 import org.jdbi.v3.core.result.ResultBearing;
 import org.jdbi.v3.core.result.ResultProducer;
 import org.jdbi.v3.core.result.ResultSetException;
@@ -49,6 +50,7 @@ import org.jdbi.v3.meta.Beta;
  */
 @Beta
 public class OracleReturning {
+
     private OracleReturning() {}
 
     public static ReturnParameters returnParameters() {
@@ -66,29 +68,33 @@ public class OracleReturning {
         return (supplier, ctx) -> ResultBearing.of(getReturnResultSet(supplier, ctx), ctx);
     }
 
-    private static Supplier<ResultSet> getReturnResultSet(Supplier<PreparedStatement> supplier, StatementContext ctx) {
+    private static Supplier<ResultSet> getReturnResultSet(Supplier<PreparedStatement> statementSupplier, StatementContext ctx) {
         return () -> {
-            PreparedStatement stmt = supplier.get();
             try {
-                if (!stmt.isWrapperFor(OraclePreparedStatement.class)) {
-                    throw new IllegalStateException("Statement is not an instance of, nor a wrapper of, OraclePreparedStatement");
+                ResultSet resultSet = unwrapOracleStatement(statementSupplier.get()).getReturnResultSet();
+
+                if (resultSet != null) {
+                    ctx.addCleanable(resultSet::close);
+                    return resultSet;
                 }
+                // TODO - #2222
+                throw new NoResultsException("Statement returned no results", ctx);
 
-                OraclePreparedStatement statement = stmt.unwrap(OraclePreparedStatement.class);
-
-                ResultSet rs = statement.getReturnResultSet();
-                if (rs != null) {
-                    ctx.addCleanable(rs::close);
-                }
-
-                return rs;
             } catch (SQLException e) {
                 throw new ResultSetException("Unable to retrieve return result set", e, ctx);
             }
         };
     }
 
+    private static OraclePreparedStatement unwrapOracleStatement(PreparedStatement stmt) throws SQLException {
+        if (!stmt.isWrapperFor(OraclePreparedStatement.class)) {
+            throw new IllegalStateException("Statement is not an instance of, nor a wrapper of, OraclePreparedStatement");
+        }
+        return stmt.unwrap(OraclePreparedStatement.class);
+    }
+
     static class ReturnParam implements Argument {
+
         private final String name;
         private final int index;
         private final int oracleType;
@@ -110,13 +116,6 @@ public class OracleReturning {
             unwrapOracleStatement(statement).registerReturnParameter(position, oracleType);
         }
 
-        private OraclePreparedStatement unwrapOracleStatement(PreparedStatement stmt) throws SQLException {
-            if (!stmt.isWrapperFor(OraclePreparedStatement.class)) {
-                throw new IllegalStateException("Statement is not an instance of, nor a wrapper of, OraclePreparedStatement");
-            }
-            return stmt.unwrap(OraclePreparedStatement.class);
-        }
-
         void bind(Binding binding) {
             if (name == null) {
                 binding.addPositional(index, this);
@@ -127,6 +126,7 @@ public class OracleReturning {
     }
 
     public static class ReturnParameters implements StatementCustomizer {
+
         private final List<ReturnParam> returnParams = new ArrayList<>();
 
         ReturnParameters() {}
@@ -153,7 +153,7 @@ public class OracleReturning {
         /**
          * Registers a return parameter on the Oracle prepared statement.
          *
-         * @param name name of the return parameter
+         * @param name       name of the return parameter
          * @param oracleType one of the values from {@link oracle.jdbc.OracleTypes}
          * @return The same instance, for method chaining
          */
