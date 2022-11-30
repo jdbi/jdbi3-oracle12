@@ -15,7 +15,7 @@
 #
 SHELL = /bin/sh
 .SUFFIXES:
-.PHONY: help clean install install-nodocker tests tests-nodocker deploy release
+.PHONY: help clean install install-nodocker install-fast tests tests-nodocker deploy release
 
 # replace JDBI_MAVEN_OPTS with implicit MAVEN_OPTS, once 3.9.x or later has been released
 MAVEN = ./mvnw ${JDBI_MAVEN_OPTS}
@@ -30,6 +30,9 @@ install:
 
 install-nodocker: JDBI_MAVEN_OPTS += -Dno-docker
 install-nodocker: install
+
+install-fast: JDBI_MAVEN_OPTS += -Pfast
+install-fast: install
 
 tests: JDBI_MAVEN_OPTS += -Dbasepom.it.skip=false
 tests:
@@ -49,6 +52,7 @@ help:
 	@echo " * clean            - clean local build tree"
 	@echo " * install          - builds and installs the current version in the local repository"
 	@echo " * install-nodocker - same as 'install', but skip all tests that require a local docker installation"
+	@echo " * install-fast     - same as 'install', but skip test execution and code analysis (Checkstyle/PMD/Spotbugs)"
 	@echo " * tests            - run all unit and integration tests"
 	@echo " * tests-nodocker   - same as 'tests', but skip all tests that require a local docker installation"
 	@echo " *"
