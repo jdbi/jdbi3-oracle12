@@ -18,37 +18,37 @@ import java.sql.SQLException;
 
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
+import org.jdbi.v3.oracle12.junit5.JdbiOracle12Extension;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
-import org.jdbi.v3.testing.JdbiRule;
-import org.junit.BeforeClass;
-import org.junit.ClassRule;
-import org.junit.Rule;
-import org.junit.Test;
+import org.jdbi.v3.testing.junit5.JdbiExtension;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.containers.OracleContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * This test uses an oracle instance in a testcontainer.
- *
- * @author Ricco Førgaard mailto:ricco@vimond.com
- * @since 2014-10-18
  */
+@Testcontainers
 public class TestGetGeneratedKeysOracle {
 
-    @ClassRule
-    public static OracleContainer oc = new OracleContainer("gvenzl/oracle-xe");
-    @Rule
-    public JdbiRule dbRule = new OracleDatabaseRule(oc)
-        .withPlugin(new SqlObjectPlugin());
+    @Container
+    public static OracleContainer oc = new OracleContainer("gvenzl/oracle-xe:slim-faststart");
 
-    @BeforeClass
+    @RegisterExtension
+    public JdbiExtension oracleExtension = new JdbiOracle12Extension(oc).withPlugin(new SqlObjectPlugin());
+
+    @BeforeAll
     public static void before() throws Exception {
-        OracleDatabaseRule.createTables(oc);
+        JdbiOracle12Extension.createTables(oc);
     }
 
     /**
@@ -64,6 +64,7 @@ public class TestGetGeneratedKeysOracle {
     }
 
     public interface DAO {
+
         @SqlUpdate("insert into something (name, id) values (:name, something_id_sequence.nextval)")
         @GetGeneratedKeys("id")
         long insert(@Bind("name") String name);
@@ -74,7 +75,7 @@ public class TestGetGeneratedKeysOracle {
 
     @Test
     public void testGetGeneratedKeys() throws Exception {
-        dbRule.getJdbi().useExtension(DAO.class, dao -> {
+        oracleExtension.getJdbi().useExtension(DAO.class, dao -> {
             Long fooId = dao.insert("Foo");
             long barId = dao.insert("Bar");
 
