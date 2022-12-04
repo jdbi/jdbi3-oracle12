@@ -14,18 +14,16 @@
 package org.jdbi.v3.oracle12;
 
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 import oracle.jdbc.OraclePreparedStatement;
 import org.jdbi.v3.core.argument.Argument;
-import org.jdbi.v3.core.result.NoResultsException;
 import org.jdbi.v3.core.result.ResultBearing;
 import org.jdbi.v3.core.result.ResultProducer;
-import org.jdbi.v3.core.result.ResultSetException;
+import org.jdbi.v3.core.result.ResultProducers;
 import org.jdbi.v3.core.statement.Binding;
 import org.jdbi.v3.core.statement.StatementContext;
 import org.jdbi.v3.core.statement.StatementCustomizer;
@@ -65,28 +63,10 @@ public class OracleReturning {
      * @see OraclePreparedStatement#getReturnResultSet()
      */
     public static ResultProducer<ResultBearing> returningDml() {
-        return (supplier, ctx) -> ResultBearing.of(getReturnResultSet(supplier, ctx), ctx);
+        return (supplier, ctx) -> ResultProducers.createResultBearing(supplier, statement -> unwrapOracleStatement(statement).getReturnResultSet(), ctx);
     }
 
-    private static Supplier<ResultSet> getReturnResultSet(Supplier<PreparedStatement> statementSupplier, StatementContext ctx) {
-        return () -> {
-            try {
-                ResultSet resultSet = unwrapOracleStatement(statementSupplier.get()).getReturnResultSet();
-
-                if (resultSet != null) {
-                    ctx.addCleanable(resultSet::close);
-                    return resultSet;
-                }
-                // TODO - #2222
-                throw new NoResultsException("Statement returned no results", ctx);
-
-            } catch (SQLException e) {
-                throw new ResultSetException("Unable to retrieve return result set", e, ctx);
-            }
-        };
-    }
-
-    private static OraclePreparedStatement unwrapOracleStatement(PreparedStatement stmt) throws SQLException {
+    private static OraclePreparedStatement unwrapOracleStatement(Statement stmt) throws SQLException {
         if (!stmt.isWrapperFor(OraclePreparedStatement.class)) {
             throw new IllegalStateException("Statement is not an instance of, nor a wrapper of, OraclePreparedStatement");
         }
