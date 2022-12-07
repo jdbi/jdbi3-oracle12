@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jdbi.internal</groupId>
         <artifactId>jdbi3-build-parent</artifactId>
-        <version>3.35.0</version>
+        <version>3.35.1-SNAPSHOT</version>
     </parent>
 
     <groupId>org.jdbi</groupId>
@@ -36,7 +36,7 @@
     </scm>
 
     <properties>
-        <dep.jdbi3.version>3.35.0</dep.jdbi3.version>
+        <dep.jdbi3.version>3.35.1-SNAPSHOT</dep.jdbi3.version>
         <dep.oracle.version>19.14.0.0</dep.oracle.version>
         <dep.testcontainers.version>1.17.6</dep.testcontainers.version>
         <moduleName>org.jdbi.v3.oracle12</moduleName>
