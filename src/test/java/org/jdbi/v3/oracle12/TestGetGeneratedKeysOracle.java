@@ -16,16 +16,17 @@ package org.jdbi.v3.oracle12;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.jdbi.v3.core.Handle;
 import org.jdbi.v3.core.mapper.RowMapper;
 import org.jdbi.v3.core.statement.StatementContext;
-import org.jdbi.v3.oracle12.junit5.JdbiOracle12Extension;
 import org.jdbi.v3.sqlobject.SqlObjectPlugin;
 import org.jdbi.v3.sqlobject.customizer.Bind;
 import org.jdbi.v3.sqlobject.statement.GetGeneratedKeys;
 import org.jdbi.v3.sqlobject.statement.SqlQuery;
 import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
-import org.junit.jupiter.api.BeforeAll;
+import org.jdbi.v3.testing.junit5.tc.JdbiTestcontainersExtension;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.containers.OracleContainer;
@@ -44,11 +45,16 @@ public class TestGetGeneratedKeysOracle {
     public static OracleContainer oc = new OracleContainer("gvenzl/oracle-xe:slim-faststart");
 
     @RegisterExtension
-    public JdbiExtension oracleExtension = new JdbiOracle12Extension(oc).withPlugin(new SqlObjectPlugin());
+    public JdbiExtension oracleExtension = JdbiTestcontainersExtension.instance(oc)
+        .withPlugin(new SqlObjectPlugin());
 
-    @BeforeAll
-    public static void before() throws Exception {
-        JdbiOracle12Extension.createTables(oc);
+    @BeforeEach
+    public void beforeEach() {
+        Handle handle = oracleExtension.getSharedHandle();
+        handle.execute(
+            "create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
+        handle.execute(
+            "create table something (name varchar(200), id int, constraint something_id primary key (id))");
     }
 
     /**
