@@ -36,6 +36,8 @@
     </scm>
 
     <properties>
+        <!-- all tests run docker containers. Run them one by one... -->
+        <basepom.test.fork-count>1</basepom.test.fork-count>
         <dep.jdbi3.version>3.35.1-SNAPSHOT</dep.jdbi3.version>
         <dep.oracle.version>19.14.0.0</dep.oracle.version>
         <dep.testcontainers.version>1.17.6</dep.testcontainers.version>
@@ -74,6 +76,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <scope>test</scope>
@@ -107,18 +115,6 @@
         <dependency>
             <groupId>org.jdbi</groupId>
             <artifactId>jdbi3-testcontainers</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>testcontainers</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.testcontainers</groupId>
-            <artifactId>jdbc</artifactId>
             <scope>test</scope>
         </dependency>
 
