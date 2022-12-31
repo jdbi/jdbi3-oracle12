@@ -1,6 +1,10 @@
 # Unreleased
 
+# 3.36.0
+
 * Support `ResultProducers#allowNoResults` flag for OracleReturning#returnParameters()
+* Remove unofficial `JdbiOracle12Extension`, use test container support for Jdbi
+* add unit test/example for Outparameter Cursor (based on https://github.com/jdbi/jdbi/issues/2231)
 
 # 3.35.0
 
