@@ -36,7 +36,7 @@ install-fast: install
 
 tests: JDBI_MAVEN_OPTS += -Dbasepom.it.skip=false
 tests:
-	${MAVEN} surefire:test invoker:integration-test invoker:verify
+	${MAVEN} surefire:test invoker:install invoker:integration-test invoker:verify
 
 tests-nodocker: JDBI_MAVEN_OPTS += -Dno-docker
 tests-nodocker: tests
