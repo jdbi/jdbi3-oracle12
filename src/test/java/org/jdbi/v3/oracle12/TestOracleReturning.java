@@ -24,6 +24,7 @@ import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.jdbi.v3.testing.junit5.tc.JdbiTestcontainersExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -37,6 +38,7 @@ import static org.jdbi.v3.oracle12.OracleReturning.returningDml;
  * This test uses an oracle instance in a testcontainer.
  */
 @Testcontainers
+@EnabledOnOs(architectures = "x86_64")
 public class TestOracleReturning {
 
     @Container
@@ -61,12 +63,12 @@ public class TestOracleReturning {
 
         try (Update update = h.createUpdate("insert into something(id, name) values (?, ?) returning id into ?")) {
             List<Integer> ids = update
-                    .bind(0, 17)
-                    .bind(1, "Brian")
-                    .addCustomizer(returnParameters().register(2, OracleTypes.INTEGER))
-                    .execute(returningDml())
-                    .mapTo(int.class)
-                    .list();
+                .bind(0, 17)
+                .bind(1, "Brian")
+                .addCustomizer(returnParameters().register(2, OracleTypes.INTEGER))
+                .execute(returningDml())
+                .mapTo(int.class)
+                .list();
 
             assertThat(ids).containsExactly(17);
         }
@@ -78,11 +80,11 @@ public class TestOracleReturning {
 
         try (Update update = h.createUpdate("insert into something(id, name) values (:id, :name) returning id into :result")) {
             List<Integer> ids = update
-                    .bindBean(new Something(20, "Brian"))
-                    .addCustomizer(returnParameters().register("result", OracleTypes.INTEGER))
-                    .execute(returningDml())
-                    .mapTo(int.class)
-                    .list();
+                .bindBean(new Something(20, "Brian"))
+                .addCustomizer(returnParameters().register("result", OracleTypes.INTEGER))
+                .execute(returningDml())
+                .mapTo(int.class)
+                .list();
 
             assertThat(ids).containsExactly(20);
         }

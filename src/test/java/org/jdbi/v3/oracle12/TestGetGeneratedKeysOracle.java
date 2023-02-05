@@ -28,6 +28,7 @@ import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.jdbi.v3.testing.junit5.tc.JdbiTestcontainersExtension;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.testcontainers.containers.OracleContainer;
 import org.testcontainers.junit.jupiter.Container;
@@ -39,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This test uses an oracle instance in a testcontainer.
  */
 @Testcontainers
+@EnabledOnOs(architectures = "x86_64")
 public class TestGetGeneratedKeysOracle {
 
     @Container
@@ -58,8 +60,8 @@ public class TestGetGeneratedKeysOracle {
     }
 
     /**
-     * Oracle needs to be queried by index and not id (like
-     * {@code DefaultGeneratedKeyMapper} does).
+     * Oracle needs to be queried by index and not id (like {@code DefaultGeneratedKeyMapper}
+     * does).
      */
     public static class OracleGeneratedKeyMapper implements RowMapper<Long> {
 
