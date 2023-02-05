@@ -1,5 +1,9 @@
 # Unreleased
 
+# 3.37.0
+* only run tests on x86_64
+
+
 # 3.36.0
 
 * Support `ResultProducers#allowNoResults` flag for OracleReturning#returnParameters()
