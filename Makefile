@@ -17,8 +17,9 @@ SHELL = /bin/sh
 .SUFFIXES:
 .PHONY: help clean install install-nodocker install-fast tests tests-nodocker deploy release
 
-# replace JDBI_MAVEN_OPTS with implicit MAVEN_OPTS, once 3.9.x or later has been released
 MAVEN = ./mvnw ${JDBI_MAVEN_OPTS}
+
+export MAVEN_OPTS MAVEN_CONFIG
 
 default: help
 
@@ -28,20 +29,20 @@ clean:
 install:
 	${MAVEN} clean install
 
-install-nodocker: JDBI_MAVEN_OPTS += -Dno-docker
+install-nodocker: MAVEN_CONFIG += -Dno-docker=true
 install-nodocker: install
 
-install-fast: JDBI_MAVEN_OPTS += -Pfast
+install-fast: MAVEN_CONFIG += -Pfast
 install-fast: install
 
-tests: JDBI_MAVEN_OPTS += -Dbasepom.it.skip=false
+tests: MAVEN_CONFIG += -Dbasepom.it.skip=false
 tests:
 	${MAVEN} surefire:test invoker:install invoker:integration-test invoker:verify
 
-tests-nodocker: JDBI_MAVEN_OPTS += -Dno-docker
+tests-nodocker: MAVEN_CONFIG += -Dno-docker=true
 tests-nodocker: tests
 
-deploy: JDBI_MAVEN_OPTS += -Dbasepom.it.skip=false
+deploy: MAVEN_CONFIG += -Dbasepom.it.skip=false
 deploy:
 	${MAVEN} clean deploy
 
