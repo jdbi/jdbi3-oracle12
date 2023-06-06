@@ -12,18 +12,18 @@
 ~   See the License for the specific language governing permissions and
 ~   limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.jdbi.internal</groupId>
+        <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-build-parent</artifactId>
-        <version>3.38.0</version>
+        <version>3.38.3</version>
     </parent>
 
     <groupId>org.jdbi</groupId>
     <artifactId>jdbi3-oracle12</artifactId>
-    <version>3.38.1-SNAPSHOT</version>
+    <version>3.38.3-SNAPSHOT</version>
 
     <name>jdbi3 oracle12</name>
     <description>Support for Oracle 12+ specific features.</description>
@@ -38,8 +38,8 @@
     <properties>
         <!-- all tests run docker containers. Run them one by one... -->
         <basepom.test.fork-count>1</basepom.test.fork-count>
-        <dep.jdbi3.version>3.38.0</dep.jdbi3.version>
-        <dep.oracle.version>19.14.0.0</dep.oracle.version>
+        <dep.jdbi3.version>3.38.3</dep.jdbi3.version>
+        <dep.oracle-xe.version>23.2.0.0</dep.oracle-xe.version>
         <moduleName>org.jdbi.v3.oracle12</moduleName>
     </properties>
 
@@ -48,7 +48,7 @@
             <dependency>
                 <groupId>com.oracle.database.jdbc</groupId>
                 <artifactId>ojdbc-bom</artifactId>
-                <version>${dep.oracle.version}</version>
+                <version>${dep.oracle-xe.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -125,6 +125,12 @@
 
         <dependency>
             <groupId>org.testcontainers</groupId>
+            <artifactId>jdbc</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testcontainers</groupId>
             <artifactId>oracle-xe</artifactId>
             <scope>test</scope>
         </dependency>
@@ -180,6 +186,7 @@
                             <excludes combine.children="append">
                                 <exclude>**/TestGetGeneratedKeysOracle.*</exclude>
                                 <exclude>**/TestOracleReturning.*</exclude>
+                                <exclude>**/TestOutparameterCursor.*</exclude>
                             </excludes>
                         </configuration>
                     </plugin>

@@ -23,8 +23,6 @@ jobs:
 
     - name: run code checkers
       env:
-        JDBI_MAVEN_OPTS: "-DskipTests=true -B -fae"
+        MAVEN_CONFIG: "-Dbasepom.test.skip=true -Dbasepom.it.skip=true -B -fae"
       run: |
-        ./mvnw --version
-        echo $PATH
         make install

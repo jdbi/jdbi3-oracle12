@@ -15,6 +15,9 @@ jobs:
       matrix:
         java-version: [ 8, 11, 17, 19 ]
         distribution: [ temurin ]
+        include:
+          - java-version: 20
+            distribution: oracle
 
     steps:
     - uses: actions/checkout@v3
@@ -42,10 +45,8 @@ jobs:
     - name: build distribution
       env:
         JAVA_HOME: ${{ steps.build_jdk.outputs.path }}
-        JDBI_MAVEN_OPTS: "-DskipTests -Dbasepom.check.skip-all=true -Dbasepom.check.skip-enforcer=false -B -fae"
+        MAVEN_CONFIG: "-Pfast -Dbasepom.check.skip-enforcer=false -B -fae"
       run: |
-        ./mvnw --version
-        echo $PATH
         make install
 
     - name: set test_jdk
@@ -57,8 +58,6 @@ jobs:
     - name: run tests
       env:
         JAVA_HOME: ${{ steps.test_jdk.outputs.path }}
-        JDBI_MAVEN_OPTS: "-B -fae"
+        MAVEN_CONFIG: "-B -fae"
       run: |
-        ./mvnw --version
-        echo $PATH
         make tests
