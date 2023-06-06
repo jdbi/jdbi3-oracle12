@@ -1,5 +1,10 @@
 # Unreleased
 
+# 3.38.3
+* build system backports from 3.38.3 release
+* new parent pom (org.jdbi:jdbi3-build-parent)
+* tweak test selection on amd64 or x86_64
+
 # 3.38.0
 * build system updates
 
