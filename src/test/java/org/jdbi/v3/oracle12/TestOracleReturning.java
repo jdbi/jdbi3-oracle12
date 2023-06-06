@@ -38,7 +38,7 @@ import static org.jdbi.v3.oracle12.OracleReturning.returningDml;
  * This test uses an oracle instance in a testcontainer.
  */
 @Testcontainers
-@EnabledOnOs(architectures = "x86_64")
+@EnabledOnOs(architectures = { "x86_64", "amd64"} )
 public class TestOracleReturning {
 
     @Container

@@ -32,7 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-@EnabledOnOs(architectures = "x86_64")
+@EnabledOnOs(architectures = { "x86_64", "amd64"} )
 public class TestOutparameterCursor {
 
     @Container

@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This test uses an oracle instance in a testcontainer.
  */
 @Testcontainers
-@EnabledOnOs(architectures = "x86_64")
+@EnabledOnOs(architectures = { "x86_64", "amd64"} )
 public class TestGetGeneratedKeysOracle {
 
     @Container
