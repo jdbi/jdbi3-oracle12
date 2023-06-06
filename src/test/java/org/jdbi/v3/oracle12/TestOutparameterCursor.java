@@ -32,7 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Testcontainers
-@EnabledOnOs(architectures = { "x86_64", "amd64"} )
+@EnabledOnOs(architectures = {"x86_64", "amd64"})
 public class TestOutparameterCursor {
 
     @Container
@@ -40,27 +40,27 @@ public class TestOutparameterCursor {
 
     @RegisterExtension
     JdbiExtension oracleExtension = JdbiTestcontainersExtension.instance(oc)
-        .withInitializer((ds, h) -> {
-            h.execute("CREATE TABLE USERS (ID INTEGER, NAME VARCHAR(255))");
-            h.execute("INSERT INTO USERS VALUES (1, 'Alice')");
-            h.execute("INSERT INTO USERS VALUES (2, 'Bob')");
-            h.execute("CREATE OR REPLACE PROCEDURE get_user_by_name(\n"
-                + "p_name IN USERS.NAME%TYPE,\n"
-                + "o_c_dbuser OUT SYS_REFCURSOR) "
-                + "AS\n"
-                + "BEGIN\n"
-                + "OPEN o_c_dbuser FOR\n"
-                + "SELECT * FROM USERS WHERE NAME LIKE p_name || '%';\n"
-                + "END;");
-        });
+            .withInitializer((ds, h) -> {
+                h.execute("CREATE TABLE USERS (ID INTEGER, NAME VARCHAR(255))");
+                h.execute("INSERT INTO USERS VALUES (1, 'Alice')");
+                h.execute("INSERT INTO USERS VALUES (2, 'Bob')");
+                h.execute("CREATE OR REPLACE PROCEDURE get_user_by_name(\n"
+                        + "p_name IN USERS.NAME%TYPE,\n"
+                        + "o_c_dbuser OUT SYS_REFCURSOR) "
+                        + "AS\n"
+                        + "BEGIN\n"
+                        + "OPEN o_c_dbuser FOR\n"
+                        + "SELECT * FROM USERS WHERE NAME LIKE p_name || '%';\n"
+                        + "END;");
+            });
 
     @Test
     public void someTest() throws Exception {
         RowMapper<User> userMapper = ConstructorMapper.of(User.class);
 
         try (Call call = oracleExtension.getSharedHandle().createCall("call get_user_by_name(:a,:b)")
-            .bind("a", "Alice")
-            .registerOutParameter("b", Types.REF_CURSOR)) {
+                .bind("a", "Alice")
+                .registerOutParameter("b", Types.REF_CURSOR)) {
             List<User> result = call.invoke(outParameters -> {
                 return outParameters.getRowSet("b").map(userMapper).list();
             });

@@ -38,7 +38,7 @@ import static org.jdbi.v3.oracle12.OracleReturning.returningDml;
  * This test uses an oracle instance in a testcontainer.
  */
 @Testcontainers
-@EnabledOnOs(architectures = { "x86_64", "amd64"} )
+@EnabledOnOs(architectures = {"x86_64", "amd64"})
 public class TestOracleReturning {
 
     @Container
@@ -46,15 +46,15 @@ public class TestOracleReturning {
 
     @RegisterExtension
     public JdbiExtension oracleExtension = JdbiTestcontainersExtension.instance(oc)
-        .withPlugin(new SqlObjectPlugin());
+            .withPlugin(new SqlObjectPlugin());
 
     @BeforeEach
     public void beforeEach() {
         Handle handle = oracleExtension.getSharedHandle();
         handle.execute(
-            "create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
+                "create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
         handle.execute(
-            "create table something (name varchar(200), id int, constraint something_id primary key (id))");
+                "create table something (name varchar(200), id int, constraint something_id primary key (id))");
     }
 
     @Test
@@ -63,12 +63,12 @@ public class TestOracleReturning {
 
         try (Update update = h.createUpdate("insert into something(id, name) values (?, ?) returning id into ?")) {
             List<Integer> ids = update
-                .bind(0, 17)
-                .bind(1, "Brian")
-                .addCustomizer(returnParameters().register(2, OracleTypes.INTEGER))
-                .execute(returningDml())
-                .mapTo(int.class)
-                .list();
+                    .bind(0, 17)
+                    .bind(1, "Brian")
+                    .addCustomizer(returnParameters().register(2, OracleTypes.INTEGER))
+                    .execute(returningDml())
+                    .mapTo(int.class)
+                    .list();
 
             assertThat(ids).containsExactly(17);
         }
@@ -80,11 +80,11 @@ public class TestOracleReturning {
 
         try (Update update = h.createUpdate("insert into something(id, name) values (:id, :name) returning id into :result")) {
             List<Integer> ids = update
-                .bindBean(new Something(20, "Brian"))
-                .addCustomizer(returnParameters().register("result", OracleTypes.INTEGER))
-                .execute(returningDml())
-                .mapTo(int.class)
-                .list();
+                    .bindBean(new Something(20, "Brian"))
+                    .addCustomizer(returnParameters().register("result", OracleTypes.INTEGER))
+                    .execute(returningDml())
+                    .mapTo(int.class)
+                    .list();
 
             assertThat(ids).containsExactly(20);
         }

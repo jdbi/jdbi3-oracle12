@@ -40,7 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * This test uses an oracle instance in a testcontainer.
  */
 @Testcontainers
-@EnabledOnOs(architectures = { "x86_64", "amd64"} )
+@EnabledOnOs(architectures = {"x86_64", "amd64"})
 public class TestGetGeneratedKeysOracle {
 
     @Container
@@ -48,15 +48,15 @@ public class TestGetGeneratedKeysOracle {
 
     @RegisterExtension
     public JdbiExtension oracleExtension = JdbiTestcontainersExtension.instance(oc)
-        .withPlugin(new SqlObjectPlugin());
+            .withPlugin(new SqlObjectPlugin());
 
     @BeforeEach
     public void beforeEach() {
         Handle handle = oracleExtension.getSharedHandle();
         handle.execute(
-            "create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
+                "create sequence something_id_sequence INCREMENT BY 1 START WITH 100");
         handle.execute(
-            "create table something (name varchar(200), id int, constraint something_id primary key (id))");
+                "create table something (name varchar(200), id int, constraint something_id primary key (id))");
     }
 
     /**
