@@ -36,7 +36,7 @@ import org.jdbi.v3.meta.Beta;
  * <p>
  * <pre>
  * List&lt;Integer&gt; ids = handle.createUpdate("insert into something (id, name) values (17, 'Brian') returning id into ?")
- *     .addCustomizer(OracleReturning.returnParameters().register(1, OracleTypes.INTEGER))
+ *     .addCustomizer(OracleReturning.returnParameters().register(0, OracleTypes.INTEGER))
  *     .execute(OracleReturning.returningDml())
  *     .mapTo(int.class)
  *     .list();
