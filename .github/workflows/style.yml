@@ -1,13 +1,12 @@
 ---
-name: Code style and sonar analysis
+name: Code style analysis
 
 on:
   push:
     branches:
       - master
-  pull_request_target:
+  pull_request:
     types:
-      - edited
       - opened
       - reopened
       - synchronize
@@ -30,41 +29,5 @@ jobs:
       - name: run code checkers
         env:
           MAVEN_CONFIG: "-Dbasepom.test.skip=true -Dbasepom.it.skip=true -B -fae"
-        run: |
-          make install
-
-  sonar:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - uses: actions/setup-java@v3
-        with:
-          java-version: 17
-          distribution: temurin
-          cache: maven
-
-      - name: cache sonar information
-        id: cache-sonar
-        uses: actions/cache@v3
-        with:
-          path: ~/.sonar/cache
-          key: ${{ runner.os }}-sonar
-
-      - name: run sonar analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          MAVEN_CONFIG: >
-            -Psonar -B -fae
-            -Dsonar.organization=jdbi
-            -Dsonar.projectKey=jdbi3_oracle12
-            -Dsonar.projectName=jdbi-oracle12
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-            -Dsonar.pullrequest.branch=${{ github.event.pull_request.head.ref }}
-            -Dsonar.scm.revision=${{ github.event.pull_request.head.sha }}
         run: |
           make install
