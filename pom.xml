@@ -200,6 +200,16 @@
                         </links>
                     </configuration>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-scm-publish-plugin</artifactId>
+                    <configuration>
+                        <ignorePathsToDelete combine.children="append">
+                            <!-- don't touch the release folders -->
+                            <ignorePathToDelete>releases</ignorePathToDelete>
+                        </ignorePathsToDelete>
+                    </configuration>
+                </plugin>
             </plugins>
         </pluginManagement>
     </build>
