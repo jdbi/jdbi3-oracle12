@@ -1,5 +1,10 @@
 # Unreleased
 
+# 3.39.1 - ** Last release to support Java 8!**
+* synced with mainline 3.39.1 release
+* deployed site for javadoc
+* fix longstanding documentation error
+
 # 3.38.3
 * build system backports from 3.38.3 release
 * new parent pom (org.jdbi:jdbi3-build-parent)
