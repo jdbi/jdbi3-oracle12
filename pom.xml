@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-build-parent</artifactId>
-        <version>3.38.3</version>
+        <version>3.39.1</version>
     </parent>
 
     <groupId>org.jdbi</groupId>
@@ -55,7 +55,7 @@
         <basepom.test.fork-count>1</basepom.test.fork-count>
 
         <!-- base version to build against. Must be released before this module can be released. -->
-        <dep.jdbi3.version>3.38.3</dep.jdbi3.version>
+        <dep.jdbi3.version>3.39.1</dep.jdbi3.version>
 
         <dep.oracle-xe.version>23.2.0.0</dep.oracle-xe.version>
         <moduleName>org.jdbi.v3.oracle12</moduleName>
