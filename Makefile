@@ -46,6 +46,10 @@ deploy: MAVEN_CONFIG += -Dbasepom.it.skip=false
 deploy:
 	${MAVEN} clean deploy
 
+# run install b/c https://issues.apache.org/jira/browse/MJAVADOC-701
+deploy-site:
+	${MAVEN} clean install site-deploy
+
 release:
 	${MAVEN} clean release:clean release:prepare release:perform
 
@@ -64,4 +68,5 @@ help:
 	@echo " ***********************************************************************"
 	@echo " *"
 	@echo " * deploy           - builds and deploys the current version to the Sonatype OSS repository"
+	@echo " * deploy-site      - builds and deploys the documentation site"
 	@echo " * release          - create and deploy a Jdbi release"

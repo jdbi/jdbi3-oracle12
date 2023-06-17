@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-build-parent</artifactId>
-        <version>3.38.4-SNAPSHOT</version>
+        <version>3.38.3</version>
     </parent>
 
     <groupId>org.jdbi</groupId>
@@ -36,9 +36,27 @@
     </scm>
 
     <properties>
+        <!-- run with -Dbasepom.it.skip=false to run tests using the guava cache plugin -->
+        <basepom.it.skip>true</basepom.it.skip>
+
+        <!-- site requires full javadoc generation -->
+        <basepom.javadoc.skip>false</basepom.javadoc.skip>
+
+        <basepom.site.scm.branch>master</basepom.site.scm.branch>
+        <basepom.site.scm.checkout-directory>${java.io.tmpdir}/gh-pages-publish/${project.artifactId}</basepom.site.scm.checkout-directory>
+        <basepom.site.scm.id>github</basepom.site.scm.id>
+        <basepom.site.scm.site-path>modules/${project.artifactId}</basepom.site.scm.site-path>
+        <basepom.site.scm.skip-deploy>false</basepom.site.scm.skip-deploy>
+        <basepom.site.scm.url>scm:git:https://github.com/jdbi/jdbi.github.io</basepom.site.scm.url>
+
+        <basepom.site.skip>false</basepom.site.skip>
+
         <!-- all tests run docker containers. Run them one by one... -->
         <basepom.test.fork-count>1</basepom.test.fork-count>
+
+        <!-- base version to build against. Must be released before this module can be released. -->
         <dep.jdbi3.version>3.38.3</dep.jdbi3.version>
+
         <dep.oracle-xe.version>23.2.0.0</dep.oracle-xe.version>
         <moduleName>org.jdbi.v3.oracle12</moduleName>
     </properties>
@@ -170,6 +188,22 @@
         </pluginRepository>
     </pluginRepositories>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-javadoc-plugin</artifactId>
+                    <configuration>
+                        <links combine.children="append">
+                            <link>https://jdbi.org/releases/${dep.jdbi3.version}/apidocs</link>
+                        </links>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
     <profiles>
         <profile>
             <id>no-docker</id>
@@ -192,6 +226,12 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>jdbi-release</id>
+            <properties>
+                <basepom.site.scm.site-path>modules/${project.artifactId}/releases/${project.version}</basepom.site.scm.site-path>
+            </properties>
         </profile>
     </profiles>
 </project>
