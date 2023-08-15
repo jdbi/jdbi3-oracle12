@@ -15,7 +15,7 @@
 #
 SHELL = /bin/sh
 .SUFFIXES:
-.PHONY: help clean install install-nodocker install-fast tests tests-nodocker deploy release
+.PHONY: help clean install install-notests install-nodocker install-fast tests run-tests run-tests-nodocker deploy release deploy-site
 
 MAVEN = ./mvnw ${JDBI_MAVEN_OPTS}
 
@@ -29,18 +29,23 @@ clean:
 install:
 	${MAVEN} clean install
 
+tests: install-notests run-tests
+
+install-notests: MAVEN_CONFIG += -Dbasepom.test.skip=true
+install-notests: install
+
 install-nodocker: MAVEN_CONFIG += -Dno-docker=true
 install-nodocker: install
 
 install-fast: MAVEN_CONFIG += -Pfast
 install-fast: install
 
-tests: MAVEN_CONFIG += -Dbasepom.it.skip=false
-tests:
+run-tests: MAVEN_CONFIG += -Dbasepom.it.skip=false
+run-tests:
 	${MAVEN} surefire:test invoker:install invoker:integration-test invoker:verify
 
-tests-nodocker: MAVEN_CONFIG += -Dno-docker=true
-tests-nodocker: tests
+run-tests-nodocker: MAVEN_CONFIG += -Dno-docker=true
+run-tests-nodocker: tests
 
 deploy: MAVEN_CONFIG += -Dbasepom.it.skip=false
 deploy:
@@ -54,12 +59,14 @@ release:
 	${MAVEN} clean release:clean release:prepare release:perform
 
 help:
-	@echo " * clean            - clean local build tree"
-	@echo " * install          - builds and installs the current version in the local repository"
-	@echo " * install-nodocker - same as 'install', but skip all tests that require a local docker installation"
-	@echo " * install-fast     - same as 'install', but skip test execution and code analysis (Checkstyle/PMD/Spotbugs)"
-	@echo " * tests            - run all unit and integration tests"
-	@echo " * tests-nodocker   - same as 'tests', but skip all tests that require a local docker installation"
+	@echo " * clean               - clean local build tree"
+	@echo " * install             - build, run static analysis and unit tests, then install in the local repository"
+	@echo " * install-notests     - same as 'install', but skip unit tests"
+	@echo " * install-nodocker    - same as 'install', but skip unit tests that require a local docker installation"
+	@echo " * install-fast        - same as 'install', but skip unit tests and static analysis"
+	@echo " * tests               - build code and run unit and integration tests except really slow tests"
+	@echo " * run-tests           - run all unit and integration tests except really slow tests"
+	@echo " * run-tests-nodocker  - same as 'run-tests', but skip all tests that require a local docker installation"
 	@echo " *"
 	@echo " ***********************************************************************"
 	@echo " *"

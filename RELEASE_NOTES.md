@@ -1,5 +1,8 @@
 # Unreleased
 
+# 3.41.0
+* synced with mainline 3.41.0 release
+
 # 3.39.1 - ** Last release to support Java 8!**
 * synced with mainline 3.39.1 release
 * deployed site for javadoc

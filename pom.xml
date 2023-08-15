@@ -18,12 +18,12 @@
     <parent>
         <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-build-parent</artifactId>
-        <version>3.39.1</version>
+        <version>3.41.0</version>
     </parent>
 
     <groupId>org.jdbi</groupId>
     <artifactId>jdbi3-oracle12</artifactId>
-    <version>3.40.0-SNAPSHOT</version>
+    <version>3.41.0-SNAPSHOT</version>
 
     <name>jdbi3 oracle12</name>
     <description>Support for Oracle 12+ specific features.</description>
@@ -55,7 +55,7 @@
         <basepom.test.fork-count>1</basepom.test.fork-count>
 
         <!-- base version to build against. Must be released before this module can be released. -->
-        <dep.jdbi3.version>3.39.1</dep.jdbi3.version>
+        <dep.jdbi3.version>${project.parent.version}</dep.jdbi3.version>
 
         <dep.oracle-xe.version>23.2.0.0</dep.oracle-xe.version>
         <moduleName>org.jdbi.v3.oracle12</moduleName>
