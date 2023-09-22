@@ -15,7 +15,7 @@
 #
 SHELL = /bin/sh
 .SUFFIXES:
-.PHONY: help clean install install-notests install-nodocker install-fast tests run-tests run-tests-nodocker deploy release deploy-site
+.PHONY: help clean install install-notests install-nodocker install-fast tests run-tests run-tests-nodocker deploy release deploy-site release-site
 
 MAVEN = ./mvnw ${JDBI_MAVEN_OPTS}
 
@@ -58,6 +58,10 @@ deploy-site:
 release:
 	${MAVEN} clean release:clean release:prepare release:perform
 
+release-site: MAVEN_CONFIG += -Pjdbi-release
+release-site:
+	${MAVEN} clean install site-deploy
+
 help:
 	@echo " * clean               - clean local build tree"
 	@echo " * install             - build, run static analysis and unit tests, then install in the local repository"
@@ -77,3 +81,4 @@ help:
 	@echo " * deploy           - builds and deploys the current version to the Sonatype OSS repository"
 	@echo " * deploy-site      - builds and deploys the documentation site"
 	@echo " * release          - create and deploy a Jdbi release"
+	@echo " * release-site     - builds and deploys the documentation site for a release"
