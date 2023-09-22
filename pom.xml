@@ -18,7 +18,7 @@
     <parent>
         <groupId>org.jdbi</groupId>
         <artifactId>jdbi3-build-parent</artifactId>
-        <version>3.41.1</version>
+        <version>3.41.2</version>
     </parent>
 
     <groupId>org.jdbi</groupId>
@@ -195,6 +195,8 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <configuration>
+                        <legacyMode>true</legacyMode>
+                        <release>${project.build.targetJdk}</release>
                         <links combine.children="append">
                             <link>https://jdbi.org/releases/${dep.jdbi3.version}/apidocs</link>
                         </links>
