@@ -22,6 +22,7 @@ import org.jdbi.v3.core.mapper.reflect.ConstructorMapper;
 import org.jdbi.v3.core.statement.Call;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.jdbi.v3.testing.junit5.tc.JdbiTestcontainersExtension;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -31,6 +32,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@Tag("slow")
 @Testcontainers
 @EnabledOnOs(architectures = {"x86_64", "amd64"})
 public class TestOutparameterCursor {

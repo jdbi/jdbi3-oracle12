@@ -27,6 +27,7 @@ import org.jdbi.v3.sqlobject.statement.SqlUpdate;
 import org.jdbi.v3.testing.junit5.JdbiExtension;
 import org.jdbi.v3.testing.junit5.tc.JdbiTestcontainersExtension;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -39,6 +40,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * This test uses an oracle instance in a testcontainer.
  */
+@Tag("slow")
 @Testcontainers
 @EnabledOnOs(architectures = {"x86_64", "amd64"})
 public class TestGetGeneratedKeysOracle {
