@@ -1,5 +1,9 @@
 # Unreleased
 
+# 3.42.0
+* synced with mainline 3.42.0 release
+* Add slow markers for tests
+
 # 3.41.3
 * synced with mainline 3.41.3 release
 

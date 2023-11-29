@@ -16,7 +16,7 @@
 SHELL = /bin/sh
 .SUFFIXES:
 
-MAVEN = ./mvnw ${JDBI_MAVEN_OPTS}
+MAVEN = ./mvnw
 
 export MAVEN_OPTS MAVEN_CONFIG
 
@@ -31,7 +31,7 @@ clean::
 install::
 	${MAVEN} clean install
 
-tests:: install-notests run-tests
+tests: install-fast run-tests
 
 install-notests:: MAVEN_CONFIG += -Dbasepom.test.skip=true
 install-notests:: install
@@ -46,8 +46,11 @@ run-tests:: MAVEN_CONFIG += -Dbasepom.it.skip=false
 run-tests::
 	${MAVEN} surefire:test invoker:install invoker:integration-test invoker:verify
 
+run-slow-tests:: MAVEN_CONFIG += -Pslow-tests
+run-slow-tests:: run-tests
+
 run-tests-nodocker:: MAVEN_CONFIG += -Dno-docker=true
-run-tests-nodocker:: tests
+run-tests-nodocker:: run-tests
 
 deploy:: MAVEN_CONFIG += -Dbasepom.it.skip=false
 deploy::
@@ -61,8 +64,7 @@ release::
 	${MAVEN} clean release:clean release:prepare release:perform
 
 release-site:: MAVEN_CONFIG += -Pjdbi-release
-release-site::
-	${MAVEN} clean install site-deploy
+release-site:: deploy-site
 
 help::
 	@echo " * clean               - clean local build tree"
@@ -72,6 +74,7 @@ help::
 	@echo " * install-fast        - same as 'install', but skip unit tests and static analysis"
 	@echo " * tests               - build code and run unit and integration tests except really slow tests"
 	@echo " * run-tests           - run all unit and integration tests except really slow tests"
+	@echo " * run-slow-tests      - run all unit and integration tests"
 	@echo " * run-tests-nodocker  - same as 'run-tests', but skip all tests that require a local docker installation"
 	@echo " *"
 	@echo " ***********************************************************************"

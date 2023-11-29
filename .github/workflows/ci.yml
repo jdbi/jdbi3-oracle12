@@ -14,8 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ 11, 17, 20, 21-ea ]
-        distribution: [ temurin ]
+        java-version: [ 11, 17, 21 ]
 
     steps:
       - uses: actions/checkout@v3
@@ -23,15 +22,15 @@ jobs:
       - uses: actions/setup-java@v3
         id: build_jdk
         with:
-          java-version: 17
-          distribution: ${{ matrix.distribution }}
+          java-version: 21
+          distribution: temurin
           cache: maven
 
       - uses: actions/setup-java@v3
         id: test_jdk
         with:
           java-version: ${{ matrix.java-version }}
-          distribution: ${{ matrix.distribution }}
+          distribution: temurin
           cache: maven
 
       - name: set build_jdk
@@ -43,9 +42,9 @@ jobs:
       - name: build distribution
         env:
           JAVA_HOME: ${{ steps.build_jdk.outputs.path }}
-          MAVEN_CONFIG: "-Pfast -Dbasepom.check.skip-enforcer=false -B -fae"
+          MAVEN_CONFIG: "-Dbasepom.check.skip-enforcer=false -B -fae"
         run: |
-          make install
+          make install-fast
 
       - name: set test_jdk
         env:

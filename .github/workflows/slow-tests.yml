@@ -1,20 +1,17 @@
 ---
-name: Code style analysis
+name: Run all tests, including slow tests
 
 on:
   push:
     branches:
       - master
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
     branches:
       - master
 
 jobs:
-  style:
+  slow-tests:
+    name: Run slow tests
     runs-on: ubuntu-latest
 
     steps:
@@ -26,8 +23,14 @@ jobs:
           distribution: temurin
           cache: maven
 
-      - name: run code checkers
+      - name: install code
         env:
           MAVEN_CONFIG: "-B -fae"
         run: |
-          make install-notests
+          make install-fast
+
+      - name: run slow tests
+        env:
+          MAVEN_CONFIG: "-B -fae"
+        run: |
+          make run-slow-tests
