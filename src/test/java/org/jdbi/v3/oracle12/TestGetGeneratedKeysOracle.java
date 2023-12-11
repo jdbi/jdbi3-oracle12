@@ -45,8 +45,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnabledOnOs(architectures = {"x86_64", "amd64"})
 public class TestGetGeneratedKeysOracle {
 
+    static final String CONTAINER_VERSION = "gvenzl/oracle-xe:" + System.getProperty("oracle.container.version", "slim-faststart");
+
     @Container
-    public static OracleContainer oc = new OracleContainer("gvenzl/oracle-xe:slim-faststart");
+    static OracleContainer oc = new OracleContainer(CONTAINER_VERSION);
 
     @RegisterExtension
     public JdbiExtension oracleExtension = JdbiTestcontainersExtension.instance(oc)
