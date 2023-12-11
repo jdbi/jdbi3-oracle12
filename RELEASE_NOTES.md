@@ -1,4 +1,5 @@
 # Unreleased
+* Deprecated OracleDatabaseRule; use testcontainer rule.
 
 # 3.42.0
 * synced with mainline 3.42.0 release

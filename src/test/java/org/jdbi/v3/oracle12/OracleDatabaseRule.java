@@ -25,7 +25,10 @@ import org.testcontainers.containers.OracleContainer;
 
 /**
  * Helper for a database managed by testcontainers.
+ *
+ * @deprecated Use the testcontainer {@link org.jdbi.v3.testing.junit5.tc.JdbiTestcontainersExtension}.
  */
+@Deprecated
 public class OracleDatabaseRule extends JdbiRule {
 
     private final String uri;
