@@ -1,5 +1,5 @@
-# Unreleased
-* Deprecated OracleDatabaseRule; use testcontainer rule.
+# 3.43.0
+* Moved JUnit 4 OracleDatabaseRule to main jar.
 
 # 3.42.0
 * synced with mainline 3.42.0 release
