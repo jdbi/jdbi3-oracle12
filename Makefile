@@ -56,9 +56,8 @@ deploy:: MAVEN_CONFIG += -Dbasepom.it.skip=false
 deploy::
 	${MAVEN} clean deploy
 
-# run install b/c https://issues.apache.org/jira/browse/MJAVADOC-701
 deploy-site::
-	${MAVEN} clean install site-deploy
+	${MAVEN} clean site-deploy
 
 release::
 	${MAVEN} clean release:clean release:prepare release:perform
