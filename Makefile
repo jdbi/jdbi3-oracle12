@@ -42,6 +42,10 @@ install-nodocker:: install
 install-fast:: MAVEN_CONFIG += -Pfast
 install-fast:: install
 
+compare-reproducible:: MAVEN_CONFIG += -Dbasepom.test.skip=true
+compare-reproducible::
+	${MAVEN} clean verify artifact:compare
+
 run-tests:: MAVEN_CONFIG += -Dbasepom.it.skip=false
 run-tests::
 	${MAVEN} surefire:test invoker:install invoker:integration-test invoker:verify
@@ -66,15 +70,16 @@ release-site:: MAVEN_CONFIG += -Pjdbi-release
 release-site:: deploy-site
 
 help::
-	@echo " * clean               - clean local build tree"
-	@echo " * install             - build, run static analysis and unit tests, then install in the local repository"
-	@echo " * install-notests     - same as 'install', but skip unit tests"
-	@echo " * install-nodocker    - same as 'install', but skip unit tests that require a local docker installation"
-	@echo " * install-fast        - same as 'install', but skip unit tests and static analysis"
-	@echo " * tests               - build code and run unit and integration tests except really slow tests"
-	@echo " * run-tests           - run all unit and integration tests except really slow tests"
-	@echo " * run-slow-tests      - run all unit and integration tests"
-	@echo " * run-tests-nodocker  - same as 'run-tests', but skip all tests that require a local docker installation"
+	@echo " * clean                - clean local build tree"
+	@echo " * install              - build, run static analysis and unit tests, then install in the local repository"
+	@echo " * install-notests      - same as 'install', but skip unit tests"
+	@echo " * install-nodocker     - same as 'install', but skip unit tests that require a local docker installation"
+	@echo " * install-fast         - same as 'install', but skip unit tests and static analysis"
+	@echo " * compare-reproducible - compare against installed jars to ensure reproducible build"
+	@echo " * tests                - build code and run unit and integration tests except really slow tests"
+	@echo " * run-tests            - run all unit and integration tests except really slow tests"
+	@echo " * run-slow-tests       - run all unit and integration tests"
+	@echo " * run-tests-nodocker   - same as 'run-tests', but skip all tests that require a local docker installation"
 	@echo " *"
 	@echo " ***********************************************************************"
 	@echo " *"
@@ -82,7 +87,7 @@ help::
 	@echo " *"
 	@echo " ***********************************************************************"
 	@echo " *"
-	@echo " * deploy           - builds and deploys the current version to the Sonatype OSS repository"
-	@echo " * deploy-site      - builds and deploys the documentation site"
-	@echo " * release          - create and deploy a Jdbi release"
-	@echo " * release-site     - builds and deploys the documentation site for a release"
+	@echo " * deploy               - builds and deploys the current version to the Sonatype OSS repository"
+	@echo " * deploy-site          - builds and deploys the documentation site"
+	@echo " * release              - create and deploy a Jdbi release"
+	@echo " * release-site         - builds and deploys the documentation site for a release"
